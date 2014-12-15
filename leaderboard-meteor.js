@@ -63,8 +63,8 @@ if(Meteor.isClient){
         // Get the ID of the player that's been clicked
         var selectedPlayer = Session.get('selectedPlayer');
 
-        // Update a document and increment the score field by 5
-        PlayersList.update(selectedPlayer, {$inc: {score: 5} });
+        // call Meteor method 'modifyPlayerScore' by 5 points
+        Meteor.call('modifyPlayerScore', selectedPlayer, 5);
 
       },
       'click .decrement': function(){
@@ -72,8 +72,8 @@ if(Meteor.isClient){
         // Get the ID of the player that's been clicked
         var selectedPlayer = Session.get('selectedPlayer');
 
-        // Update a document and decrement the score field by 5
-        PlayersList.update(selectedPlayer, {$inc: {score: -5} });
+        // call Meteor method 'modifyPlayerScore' by -5 points
+        Meteor.call('modifyPlayerScore', selectedPlayer, -5);
 
       },
       'click .remove': function(){
@@ -81,8 +81,8 @@ if(Meteor.isClient){
         // Get the ID of the player that's been clicked
         var selectedPlayer = Session.get('selectedPlayer');
 
-        // Remove a document from the collection
-        PlayersList.remove(selectedPlayer);
+        // call Meteor method 'modifyPlayerScore'
+        Meteor.call('removePlayerData', selectedPlayer);
 
       }
   });
@@ -96,15 +96,11 @@ if(Meteor.isClient){
         // Get the value from the "playerName" text field
         playerNameVar = event.target.playerName.value;
 
-        // Get the ID of the current user
-        var currentUserId = Meteor.userId();
+        // Get the value from the "playerName" text field
+        playerScoreVar = Number(event.target.playerScore.value);
 
-        // Insert the new player into the collection
-        PlayersList.insert({
-          name: playerNameVar,
-          score: 0,
-          createdBy: currentUserId
-        });
+        // call Meteor method 'insertPlayerData'
+        Meteor.call('insertPlayerData', playerNameVar, playerScoreVar);
 
     }
   });
@@ -123,6 +119,24 @@ if(Meteor.isServer){
     // Return players "owned" by the current user
     return PlayersList.find({createdBy: currentUserId})
 
+  });
+
+  // Method functions executed on server from Client submitted data
+  Meteor.methods({
+    'insertPlayerData': function(playerNameVar, playerScoreVar){
+      var currentUserId = Meteor.userId();
+      PlayersList.insert ({
+        name: playerNameVar,
+        score: playerScoreVar,
+        createdBy: currentUserId
+      });
+    },
+    'removePlayerData': function(selectedPlayer){
+      PlayersList.remove(selectedPlayer);
+    },
+    'modifyPlayerScore': function(selectedPlayer, scoreValue){
+      PlayersList.update(selectedPlayer, {$inc: {score: scoreValue} });
+    }
   });
 
 }
