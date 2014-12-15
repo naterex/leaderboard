@@ -1,23 +1,23 @@
-if (Meteor.isClient) {
-  // counter starts at 0
-  Session.setDefault("counter", 0);
+// Create a MongoDB Collection
+PlayersList = new Mongo.Collection('players');
+// console.log("PlayersList created");
 
-  Template.hello.helpers({
-    counter: function () {
-      return Session.get("counter");
+if(Meteor.isClient){
+  Template.leaderboard.helpers({
+    // helpers go here
+    'player': function(){
+      return PlayersList.find()
     }
   });
-
-  Template.hello.events({
-    'click button': function () {
-      // increment the counter when button is clicked
-      Session.set("counter", Session.get("counter") + 1);
+  Template.leaderboard.events({
+    // events go here
+    'dblclick .player': function(){
+      Session.set('selectedPlayer', 'session value test');
+      console.log("You clicked a .player element");
     }
   });
 }
 
-if (Meteor.isServer) {
-  Meteor.startup(function () {
-    // code to run on server at startup
-  });
+if(Meteor.isServer){
+
 }
