@@ -9,12 +9,22 @@
 <template name="leaderboard">
   <ul>
     {{#each player}}
-      <li class="player {{ selectedClass }}">{{name}}: {{score}}</li>
+      <li class="player {{ selectedClass }}">{{ name }}: {{ score }}</li>
     {{/each}}
     {{#if showSelectedPlayer}}
       <input type="button" class="increment" value="Give 5 points">
       <input type="button" class="decrement" value="Remove 5 points">
+      <input type="button" class="remove" value="Remove this player">
       <li class="">Selected player: {{ showSelectedPlayer.name }}</li>
     {{/if}}
   </ul>
+  {{> addPlayerForm}}
+</template>
+
+<template name="addPlayerForm">
+  <form>
+    <input type="text" name="playerName" placeholder="Name">
+    <input type="number" name="playerScore" placeholder="0">
+    <input type="submit" value="Add Player">
+  </form>
 </template>
